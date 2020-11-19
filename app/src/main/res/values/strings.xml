@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GaitAnasis</string>
+    <string name="btn_reconnect">Reconnect</string>
+</resources>
