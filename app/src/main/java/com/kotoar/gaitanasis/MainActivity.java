@@ -35,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean is_data_analyze;
     public boolean is_data_exportable;
 
-    BluetoothProcess mBluetoothProcess;
+    TimestampSync mTimestampSync;
+    BluetoothProcess mBluetoothProcess1;
+    DataStorage mDataStorage1;
+    ConnectedThread mConnectionThread1;
 
     ViewPager viewPager;
     TabLayout tablayout;
@@ -57,20 +60,21 @@ public class MainActivity extends AppCompatActivity {
                 data_export();
             }
             if (action.equals("transmission.data_record")){
-                if(is_data_record){
+                if(is_data_record){     //stop record and enable export
                     is_data_record = false;
                     is_data_exportable = true;
                     Intent sendintent = new Intent();
                     sendintent.setAction("transmission.export_enable");
                     sendBroadcast(sendintent);
                 }
-                else{
+                else{       //begin record and start timer
                     is_data_record = true;
                     is_data_exportable = false;
                     Intent sendintent = new Intent();
                     sendintent.setAction("transmission.export_disable");
                     sendBroadcast(sendintent);
                     mDataStorage1.cleardata();
+                    mTimestampSync.setTimestamp();
                 }
             }
             if (action.equals("transmission.data_analyze")){
@@ -82,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (action.equals("transmission.bluetooth_connect")){
-                if(!mBluetoothProcess.isBlueToothConnected){
+                if(!mBluetoothProcess1.isBlueToothConnected){
                     bluetooth_connect();
                 }
                 else{
@@ -92,8 +96,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    DataStorage mDataStorage1;
-    ConnectedThread mConnectionThread;
+
 
     public Map<Character, Double> values = new HashMap<Character, Double>();
 
@@ -117,13 +120,14 @@ public class MainActivity extends AppCompatActivity {
         is_data_record = false;
         is_data_analyze = false;
         is_data_exportable = false;
-        mBluetoothProcess = new BluetoothProcess();
+        mBluetoothProcess1 = new BluetoothProcess();
         mDataStorage1 = new DataStorage();
+        mTimestampSync = new TimestampSync();
 
         initViewPager();
 
 
-        if (!mBluetoothProcess.mBluetoothAdapter.isEnabled()) {
+        if (!mBluetoothProcess1.mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivity(enableBtIntent);
         }
@@ -134,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy(){
         super.onDestroy();
         unregisterReceiver(mMainBroadcastReceiver);
-        mBluetoothProcess.disconnect();
+        mBluetoothProcess1.disconnect();
     }
 
     private void init_map_value(){
@@ -154,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void transmitdata(byte[] data, int num){
-        mConnectionThread.write(data);
+        mConnectionThread1.write(data);
     }
 
     public void data_export(){
@@ -182,9 +186,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bluetooth_connect(){
-        mBluetoothProcess.connect();
-        mConnectionThread = new ConnectedThread(mBluetoothProcess.mSocket);
-        if(mBluetoothProcess.isBlueToothConnected){
+        mBluetoothProcess1.connect();
+        mConnectionThread1 = new ConnectedThread(mBluetoothProcess1.mSocket);
+        if(mBluetoothProcess1.isBlueToothConnected){
             Toast.makeText(this,"connected",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
             intent.setAction("transmission.bluetooth_connected");
@@ -193,13 +197,13 @@ public class MainActivity extends AppCompatActivity {
         else{
             Toast.makeText(this,"Not connect",Toast.LENGTH_SHORT).show();
         }
-        mConnectionThread.start();
+        mConnectionThread1.start();
     }
 
     private void bluetooth_disconnect(){
-        if(mBluetoothProcess.isBlueToothConnected){
-            mBluetoothProcess.disconnect();
-            if(!mBluetoothProcess.isBlueToothConnected){
+        if(mBluetoothProcess1.isBlueToothConnected){
+            mBluetoothProcess1.disconnect();
+            if(!mBluetoothProcess1.isBlueToothConnected){
                 Toast.makeText(this,"disconnected",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.setAction("transmission.bluetooth_disconnected");
@@ -287,13 +291,13 @@ public class MainActivity extends AppCompatActivity {
                 return 0.0;
             }
             if(datatype=='t'){
-                return (double)input_data/imu_freq;
+                return (double)mTimestampSync.getTimestamp()/1000.0;
             }
             if(datatype=='l' || datatype=='m' || datatype=='n'){
                 return (double)input_data/5000.0;
             }
             if(datatype=='r'){
-                return (double)input_data/mag_freq;
+                return (double)mTimestampSync.getTimestamp()/1000.0;
             }
             //todo: strain sensors unit exchange
             return 0.0;
@@ -304,9 +308,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             Log.e("myTAG", "BEGIN mConnectedThread");
-            byte[] buffer = new byte[30];
+            byte[] buffer = new byte[16];
             int bytes;
-            Log.e("myTAG", String.valueOf(mBluetoothProcess.isBlueToothConnected));
+            Log.e("myTAG", String.valueOf(mBluetoothProcess1.isBlueToothConnected));
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
