@@ -1,86 +1,211 @@
 package com.kotoar.gaitanasis;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toolbar;
+import android.widget.Toast;
+
+import com.google.android.material.tabs.TabLayout;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.String.format;
 
 public class MainActivity extends AppCompatActivity {
 
+    public final double imu_freq = 12.5;
+    public final double mag_freq = 10;
+    public boolean is_data_record;
+    public boolean is_data_analyze;
+    public boolean is_data_exportable;
+
     BluetoothProcess mBluetoothProcess;
 
-    private IntentFilter intentFilter;
-    //private UIUpdateBroadcastReceiver mUIUpdateBroadcastReceiver;
+    ViewPager viewPager;
+    TabLayout tablayout;
 
-    TextView textview1;
-    TextView textview2;
-    TextView textview3;
-    Button mButtonReconnect;
+    SectionPagerAdapter mSectionPagerAdapter;
 
-    private int[] values = {0,0,0};
+    private BroadcastReceiver mMainBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals("transmission.send_data")){
+                char ctrl_type = intent.getCharExtra("ctrl", '0');
+                int value = intent.getIntExtra("value", 0);
+                int device = intent.getIntExtra("device", 0);
+                byte[] data = {(byte)ctrl_type, (byte)value};
+                transmitdata(data, device);
+            }
+            if (action.equals("transmission.data_export")){
+                data_export();
+            }
+            if (action.equals("transmission.data_record")){
+                if(is_data_record){
+                    is_data_record = false;
+                    is_data_exportable = true;
+                    Intent sendintent = new Intent();
+                    sendintent.setAction("transmission.export_enable");
+                    sendBroadcast(sendintent);
+                }
+                else{
+                    is_data_record = true;
+                    is_data_exportable = false;
+                    Intent sendintent = new Intent();
+                    sendintent.setAction("transmission.export_disable");
+                    sendBroadcast(sendintent);
+                    mDataStorage1.cleardata();
+                }
+            }
+            if (action.equals("transmission.data_analyze")){
+                if(is_data_analyze){
+                    is_data_analyze = false;
+                }
+                else{
+                    is_data_analyze = true;
+                }
+            }
+            if (action.equals("transmission.bluetooth_connect")){
+                if(!mBluetoothProcess.isBlueToothConnected){
+                    bluetooth_connect();
+                }
+                else{
+                    bluetooth_disconnect();
+                }
+            }
+        }
+    };
+
+    DataStorage mDataStorage1;
+    ConnectedThread mConnectionThread;
+
+    public Map<Character, Double> values = new HashMap<Character, Double>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textview1 = (TextView) findViewById(R.id.textView1);
-        textview2 = (TextView) findViewById(R.id.textView2);
-        textview3 = (TextView) findViewById(R.id.textView3);
-        mButtonReconnect = (Button) findViewById(R.id.btn_reconnect);
+        requestStoragePermission();
 
+        init_map_value();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("transmission.send_data");
+        intentFilter.addAction("transmission.data_export");
+        intentFilter.addAction("transmission.bluetooth_connect");
+        intentFilter.addAction("transmission.data_record");
+        intentFilter.addAction("transmission.data_analyze");
+        registerReceiver(mMainBroadcastReceiver, intentFilter);
+
+        is_data_record = false;
+        is_data_analyze = false;
+        is_data_exportable = false;
         mBluetoothProcess = new BluetoothProcess();
+        mDataStorage1 = new DataStorage();
+
+        initViewPager();
+
 
         if (!mBluetoothProcess.mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivity(enableBtIntent);
         }
-        mBluetoothProcess.connect();
-        ConnectedThread mConnectionThread = new ConnectedThread(mBluetoothProcess.mSocket);
-        mConnectionThread.start();
 
         updateTextView();
-
-        mButtonReconnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mBluetoothProcess.connect();
-                ConnectedThread mConnectionThread = new ConnectedThread(mBluetoothProcess.mSocket);
-                mConnectionThread.start();
-            }
-        });
     }
 
     public void onDestroy(){
         super.onDestroy();
-        //unregisterReceiver(mUIUpdateBroadcastReceiver);
+        unregisterReceiver(mMainBroadcastReceiver);
         mBluetoothProcess.disconnect();
     }
 
+    private void init_map_value(){
+        values.put('x',0.0);
+        values.put('y',0.0);
+        values.put('z',0.0);
+        values.put('a',0.0);
+        values.put('b',0.0);
+        values.put('c',0.0);
+        values.put('t',0.0);
+        values.put('l',0.0);
+        values.put('m',0.0);
+        values.put('n',0.0);
+        values.put('r',0.0);
+        //todo: strain sensors
+        values.put('s',0.0);
+    }
+
+    public void transmitdata(byte[] data, int num){
+        mConnectionThread.write(data);
+    }
+
+    public void data_export(){
+        is_data_record = false;
+        Toast.makeText(this,"exporting",Toast.LENGTH_SHORT).show();
+        mDataStorage1.SaveAsJSON("test");
+        mDataStorage1.cleardata();
+        is_data_record = true;
+        Toast.makeText(this,"exported",Toast.LENGTH_SHORT).show();
+    }
+
     private void updateTextView(){
-        textview1.setText("x: " + String.valueOf(values[0]));
-        textview2.setText("y: " + String.valueOf(values[1]));
-        textview3.setText("z: " + String.valueOf(values[2]));
+        Intent intent = new Intent();
+        intent.setAction("action.update_showing");
+        intent.putExtra("x", values.get('x'));
+        intent.putExtra("y", values.get('y'));
+        intent.putExtra("z", values.get('z'));
+        intent.putExtra("a", values.get('a'));
+        intent.putExtra("b", values.get('b'));
+        intent.putExtra("c", values.get('c'));
+        intent.putExtra("l", values.get('l'));
+        intent.putExtra("m", values.get('m'));
+        intent.putExtra("n", values.get('n'));
+        sendBroadcast(intent);
+    }
+
+    private void bluetooth_connect(){
+        mBluetoothProcess.connect();
+        mConnectionThread = new ConnectedThread(mBluetoothProcess.mSocket);
+        if(mBluetoothProcess.isBlueToothConnected){
+            Toast.makeText(this,"connected",Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent();
+            intent.setAction("transmission.bluetooth_connected");
+            sendBroadcast(intent);
+        }
+        else{
+            Toast.makeText(this,"Not connect",Toast.LENGTH_SHORT).show();
+        }
+        mConnectionThread.start();
+    }
+
+    private void bluetooth_disconnect(){
+        if(mBluetoothProcess.isBlueToothConnected){
+            mBluetoothProcess.disconnect();
+            if(!mBluetoothProcess.isBlueToothConnected){
+                Toast.makeText(this,"disconnected",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setAction("transmission.bluetooth_disconnected");
+                sendBroadcast(intent);
+            }
+        }
     }
 
     Handler handler = new Handler() {
@@ -88,19 +213,48 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
             super.handleMessage(msg);
-            // 通过msg传递过来的信息，吐司一下收到的信息
-            // Toast.makeText(BuletoothClientActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
-            if((int)msg.obj ==1){
+            if(((String)msg.obj).equals("update")){
                 updateTextView();
             }
         }
     };
 
+    private void initViewPager(){
+        tablayout = (TabLayout)findViewById(R.id.tabs_layout);
+        viewPager = (ViewPager)findViewById(R.id.view_pager);
+
+        tablayout.setupWithViewPager(viewPager);
+
+        mSectionPagerAdapter = new SectionPagerAdapter(this, getSupportFragmentManager());
+        viewPager.setAdapter(mSectionPagerAdapter);
+        tablayout.setupWithViewPager(viewPager);
+        //viewPager.setOffscreenPageLimit(2);
+    }
+
+    private void requestStoragePermission(){
+        final int REQUEST_EXTERNAL_STORAGE = 1;
+        String[] PERMISSIONS_STORAGE = {
+                "android.permission.READ_EXTERNAL_STORAGE",
+                "android.permission.WRITE_EXTERNAL_STORAGE"
+        };
+        try {
+            int permission = ActivityCompat.checkSelfPermission(this,
+                    "android.permission.WRITE_EXTERNAL_STORAGE");
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
-        private int reading_statue;
+        private char reading_type;
+        private int reading_step;
         private int reading_value;
         private int reading_sign;
 
@@ -119,9 +273,30 @@ public class MainActivity extends AppCompatActivity {
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
-            reading_statue = 1;
+            reading_type = '0';
+            reading_step = 1;
             reading_value = 0;
             reading_sign = 1;
+        }
+
+        private double unit_exchange(char datatype, int input_data){
+            if(datatype=='x' || datatype=='y' || datatype=='z'){
+                return (double)input_data/4200;
+            }
+            if(datatype=='a' || datatype=='b' || datatype=='c'){
+                return 0.0;
+            }
+            if(datatype=='t'){
+                return (double)input_data/imu_freq;
+            }
+            if(datatype=='l' || datatype=='m' || datatype=='n'){
+                return (double)input_data/5000.0;
+            }
+            if(datatype=='r'){
+                return (double)input_data/mag_freq;
+            }
+            //todo: strain sensors unit exchange
+            return 0.0;
         }
 
         public void run() {
@@ -129,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             Log.e("myTAG", "BEGIN mConnectedThread");
-            byte[] buffer = new byte[18];
+            byte[] buffer = new byte[30];
             int bytes;
             Log.e("myTAG", String.valueOf(mBluetoothProcess.isBlueToothConnected));
             // Keep listening to the InputStream while connected
@@ -138,50 +313,68 @@ public class MainActivity extends AppCompatActivity {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
                     for(int i=0;i<bytes;i++){
-                        if(reading_statue%10==1){
-                            if((char)buffer[i] == 'x'){
-                                reading_statue = 12;
-                            }
-                            if((char)buffer[i] == 'y'){
-                                reading_statue = 22;
-                            }
-                            if((char)buffer[i] == 'z'){
-                                reading_statue = 32;
+                        if(reading_step==1){
+                            char dataget = (char)buffer[i];
+                            if(dataget=='x' || dataget=='y' || dataget=='z'
+                            || dataget=='a' || dataget=='b' || dataget=='c' || dataget=='t'
+                            || dataget=='l' || dataget=='m' || dataget=='n' || dataget=='r'
+                            || dataget=='s'){
+                                reading_type = (char)buffer[i];
+                                reading_step += 1;
+                                continue;
                             }
                             continue;
                         }
-                        if(reading_statue%10==2){
+                        if(reading_step==2){
                             if((char)buffer[i] == '-'){
                                 reading_sign = -1;
                             }
                             else{
                                 reading_sign = 1;
                             }
-                            reading_statue += 1;
+                            reading_step += 1;
                             continue;
                         }
-                        if(reading_statue%10==3){
+                        if(reading_step==3){
                             reading_value = 256*buffer[i];
-                            reading_statue += 1;
+                            reading_step += 1;
                             continue;
                         }
-                        if(reading_statue%10==4){
+                        if(reading_step==4){
                             reading_value += buffer[i];
                             reading_value *= reading_sign;
-                            values[reading_statue/10-1] = reading_value;
-                            Log.e("myTAG", String.valueOf(reading_value)+','+String.valueOf(reading_statue));
+                            values.put(reading_type,unit_exchange(reading_type,reading_value));
                             reading_value = 0;
-                            reading_statue = 1;
+                            reading_step = 1;
+                            if(is_data_record && reading_type=='t' || reading_type=='r' || reading_type=='s'){
+                                if(reading_type=='t'){
+                                    mDataStorage1.addimu3(values.get('x'),values.get('y'),values.get('z'),values.get('t'));
+                                }
+                                if(reading_type=='r'){
+                                    mDataStorage1.addmag(values.get('l'),values.get('m'),values.get('n'),values.get('r'));
+                                }
+                                if(reading_type=='s'){
+                                    //todo: strain sensors output
+                                }
+                            }
                         }
                     }
                     Message msg = new Message();
-                    msg.obj = 1;
+                    msg.obj = "update";
                     handler.sendMessage(msg);
                 } catch (IOException e) {
                     Log.e("myTAG","disconnected " + e);
                     //join();
                     break;
                 }
+            }
+        }
+
+        public void write(byte[] bytes) {
+            try {
+                mmOutStream.write(bytes);
+            } catch (IOException e) {
+                Log.e("myTAG","Write Error " + e);
             }
         }
 

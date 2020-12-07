@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">GaitAnasis</string>
+    <string name="app_name">Gait Analysis</string>
     <string name="btn_reconnect">Reconnect</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_terminal">End</string>
+    <string name="tab_text_gait">Gait Analysis</string>
+    <string name="tab_text_ctrl">Control and Setting</string>
 </resources>

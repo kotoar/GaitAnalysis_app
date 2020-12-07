@@ -19,6 +19,7 @@ import static android.content.ContentValues.TAG;
 public class BluetoothProcess {
 
     private final String MACAddr04 = "98:D3:41:FD:BB:06";
+    private final String MacAddr05 = "98:D3:C1:FD:93:F8";
     static final UUID SerialPort_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     boolean isBlueToothConnected;
     public BluetoothAdapter mBluetoothAdapter;
@@ -64,6 +65,7 @@ public class BluetoothProcess {
     public void disconnect(){
         try {
             mSocket.close();
+            isBlueToothConnected = false;
         } catch (IOException e) {
             Log.v("myTAG", "close() of connect socket failed" + e);
         }

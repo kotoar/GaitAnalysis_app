@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fraglayout_ctrl"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.kotoar.gaitanasis.MagnetView
+        android:id="@+id/magnet_bluetoothsetup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:Label="Bluetooth Setup"
+        app:Content="Search and connect to Bluetooth devices nearby"
+        app:Icon="@drawable/ic_settings_bluetooth_24px"/>
+
+    <com.kotoar.gaitanasis.MagnetView
+        android:id="@+id/magnet_dataexport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:Label="Data Export"
+        app:Content="Save the data in format of json"
+        app:Icon="@drawable/ic_eject_24px"/>
+
+    <com.kotoar.gaitanasis.MagnetView
+        android:id="@+id/magnet_magcalibration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:Label="Magnetometer Calibration"
+        app:Content="Calibrating magnetometer, usually takes 20 seconds"
+        app:Icon="@drawable/ic_explore_24px"/>
+
+    <com.kotoar.gaitanasis.MagnetSwitchView
+        android:id="@+id/magnet_ledtest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:SwitchLabel="LED Red"
+        app:SwitchContent="Turn on/off the light to text the connection"
+        app:SwitchIcon="@drawable/ic_highlight_24px"/>
+
+    <com.kotoar.gaitanasis.MagnetView
+        android:id="@+id/magnet_battery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:Label="Battery"
+        app:Content="Battery information of the system"
+        app:Icon="@drawable/ic_battery_charging_full_24px"/>
+
+</LinearLayout>

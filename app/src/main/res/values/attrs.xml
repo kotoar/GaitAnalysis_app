@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MagnetView">
+        <attr name="Label" format="string" />
+        <attr name="Content" format="string" />
+        <attr name="Icon" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="MagnetSwitchView">
+        <attr name="SwitchLabel" format="string" />
+        <attr name="SwitchContent" format="string" />
+        <attr name="SwitchIcon" format="reference" />
+    </declare-styleable>
+</resources>
