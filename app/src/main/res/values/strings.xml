@@ -5,4 +5,10 @@
     <string name="btn_terminal">End</string>
     <string name="tab_text_gait">Gait Analysis</string>
     <string name="tab_text_ctrl">Control and Setting</string>
+
+    <string name="devices_text_select">Set as</string>
+    <string name="devices_select_device1">Device 1 (Left)</string>
+    <string name="devices_select_device2">Device 2 (Right)</string>
+    <string name="devices_text_end_seraching">Searching for devices…</string>
+    <string name="devices_text_end_finished">Searching Finished</string>
 </resources>

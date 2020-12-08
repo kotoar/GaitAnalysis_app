@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 public class FragmentCtrl extends Fragment {
 
+    MagnetView mMagnetDevices;
     MagnetView mMagnetExport;
     MagnetView mMagnetMagcali;
     MagnetSwitchView mMagnetLED;
@@ -61,6 +62,7 @@ public class FragmentCtrl extends Fragment {
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ctrl, container, false);
 
+        mMagnetDevices = view.findViewById(R.id.magnet_bluetoothsetup);
         mMagnetExport = view.findViewById(R.id.magnet_dataexport);
         mMagnetMagcali = view.findViewById(R.id.magnet_magcalibration);
         mMagnetLED = view.findViewById(R.id.magnet_ledtest);
@@ -68,6 +70,16 @@ public class FragmentCtrl extends Fragment {
         mMagnetExport.setIsClickable(false);
         mMagnetMagcali.setIsClickable(false);
         mMagnetLED.setIsClickable(false);
+
+
+        mMagnetDevices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction("control.start_devices_activity");
+                getActivity().sendBroadcast(intent);
+            }
+        });
 
         mMagnetExport.setOnClickListener(new View.OnClickListener() {
             @Override

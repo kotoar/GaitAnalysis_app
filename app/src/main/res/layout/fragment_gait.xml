@@ -16,19 +16,19 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView_x"
+                android:id="@+id/textView_device1_x"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="x: 00000" />
 
             <TextView
-                android:id="@+id/textView_y"
+                android:id="@+id/textView_device1_y"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="y: 00000" />
 
             <TextView
-                android:id="@+id/textView_z"
+                android:id="@+id/textView_device1_z"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="z: 00000" />
@@ -45,19 +45,19 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView_a"
+                android:id="@+id/textView_device1_a"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="a: 00000" />
 
             <TextView
-                android:id="@+id/textView_b"
+                android:id="@+id/textView_device1_b"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="b: 00000" />
 
             <TextView
-                android:id="@+id/textView_c"
+                android:id="@+id/textView_device1_c"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="c: 00000" />
@@ -74,19 +74,108 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView_l"
+                android:id="@+id/textView_device1_l"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="l: 00000" />
 
             <TextView
-                android:id="@+id/textView_m"
+                android:id="@+id/textView_device1_m"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="m: 00000" />
 
             <TextView
-                android:id="@+id/textView_n"
+                android:id="@+id/textView_device1_n"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="n: 00000" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_device2_x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="x: 00000" />
+
+            <TextView
+                android:id="@+id/textView_device2_y"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="y: 00000" />
+
+            <TextView
+                android:id="@+id/textView_device2_z"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="z: 00000" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_device2_a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="a: 00000" />
+
+            <TextView
+                android:id="@+id/textView_device2_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="b: 00000" />
+
+            <TextView
+                android:id="@+id/textView_device2_c"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="c: 00000" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_device2_l"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="l: 00000" />
+
+            <TextView
+                android:id="@+id/textView_device2_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="m: 00000" />
+
+            <TextView
+                android:id="@+id/textView_device2_n"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="n: 00000" />
@@ -95,10 +184,18 @@
     </LinearLayout>
 
     <com.kotoar.gaitanasis.MagnetSwitchView
-        android:id="@+id/magnet_switch_connect"
+        android:id="@+id/magnet_switch_connect_device1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:SwitchLabel="Connect"
+        app:SwitchLabel="Connect Device 1"
+        app:SwitchContent="Connect to selected devices"
+        app:SwitchIcon="@drawable/ic_bluetooth_disabled_24px"/>
+
+    <com.kotoar.gaitanasis.MagnetSwitchView
+        android:id="@+id/magnet_switch_connect_device2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:SwitchLabel="Connect Device 2"
         app:SwitchContent="Connect to selected devices"
         app:SwitchIcon="@drawable/ic_bluetooth_disabled_24px"/>
 

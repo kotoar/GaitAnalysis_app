@@ -18,17 +18,19 @@ import static android.content.ContentValues.TAG;
 
 public class BluetoothProcess {
 
-    private final String MACAddr04 = "98:D3:41:FD:BB:06";
-    private final String MacAddr05 = "98:D3:C1:FD:93:F8";
+
+
+    private String MacAddress;
     static final UUID SerialPort_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     boolean isBlueToothConnected;
     public BluetoothAdapter mBluetoothAdapter;
     private BluetoothDevice bluetoothDevice;
     public BluetoothSocket mSocket;
 
-    BluetoothProcess(){
+    BluetoothProcess(String macAddress){
+        MacAddress = macAddress;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        bluetoothDevice = mBluetoothAdapter.getRemoteDevice(MACAddr04);
+        bluetoothDevice = mBluetoothAdapter.getRemoteDevice(MacAddress);
         isBlueToothConnected = false;
     }
 
