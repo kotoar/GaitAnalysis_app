@@ -43,8 +43,7 @@ public class FragmentGait extends Fragment {
     MagnetSwitchView mMagnetRecord;
     MagnetSwitchView mMagnetDetect;
 
-    boolean is_device1_connected;
-    boolean is_device2_connected;
+    ControlParameters params;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,16 +51,9 @@ public class FragmentGait extends Fragment {
         IntentFilter filter = new IntentFilter();
         filter.addAction("action.update_showing1");
         filter.addAction("action.update_showing2");
-        filter.addAction("action.show_mag");
-        filter.addAction("transmission.bluetooth_device1_connected");
-        filter.addAction("transmission.bluetooth_device1_disconnected");
-        filter.addAction("transmission.bluetooth_device2_connected");
-        filter.addAction("transmission.bluetooth_device2_disconnected");
+        filter.addAction("transmission.bluetooth_status");
         getActivity().getApplicationContext().registerReceiver(mGaitReceiver, filter);
-
-        is_device1_connected = false;
-        is_device2_connected = false;
-
+        params = ControlParameters.getInstance();
     }
 
     @Override
@@ -98,18 +90,25 @@ public class FragmentGait extends Fragment {
         mMagnetConnect1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction("transmission.bluetooth_device1_connect");
-                getActivity().sendBroadcast(intent);
+                if(params.is_device1_connected){
+                    ((MainActivity)getActivity()).bluetooth_device1_disconnect();
+                }
+                else{
+                    ((MainActivity)getActivity()).bluetooth_device1_connect();
+                }
+
             }
         });
 
         mMagnetConnect2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction("transmission.bluetooth_device2_connect");
-                getActivity().sendBroadcast(intent);
+                if(params.is_device2_connected){
+                    ((MainActivity)getActivity()).bluetooth_device2_disconnect();
+                }
+                else{
+                    ((MainActivity)getActivity()).bluetooth_device2_connect();
+                }
             }
         });
 
@@ -123,8 +122,9 @@ public class FragmentGait extends Fragment {
                     return;
                 }
                 mMagnetRecord.turn();
+                params.recordClick();
                 Intent intent = new Intent();
-                intent.setAction("transmission.data_record");
+                intent.setAction("transmission.record_status");
                 getActivity().sendBroadcast(intent);
             }
         });
@@ -139,27 +139,10 @@ public class FragmentGait extends Fragment {
                     return;
                 }
                 mMagnetDetect.turn();
-                Intent intent = new Intent();
-                intent.setAction("transmission.data_analyze");
-                getActivity().sendBroadcast(intent);
+                params.analyzeClick();
             }
         });
-
         return view;
-
-    }
-
-    private void resetButtonEnable(){
-        if(is_device1_connected || is_device2_connected){
-            mMagnetRecord.setIsClickable(true);
-            mMagnetDetect.setIsClickable(true);
-        }
-        else{
-            mMagnetRecord.setIsClickable(false);
-            mMagnetRecord.setChecked(false);
-            mMagnetDetect.setIsClickable(false);
-            mMagnetDetect.setChecked(false);
-        }
     }
 
     private BroadcastReceiver mGaitReceiver = new BroadcastReceiver() {
@@ -188,29 +171,31 @@ public class FragmentGait extends Fragment {
                 textview_device2_m.setText("m: " + String.valueOf(intent.getDoubleExtra("m", 0.0)));
                 textview_device2_n.setText("n: " + String.valueOf(intent.getDoubleExtra("n", 0.0)));
             }
-            if (action.equals("transmission.bluetooth_device1_connected")) {
-                mMagnetConnect1.setChecked(true);
-                mMagnetConnect1.setIcon(R.drawable.ic_bluetooth_connected_24px);
-                is_device1_connected = true;
-                resetButtonEnable();
-            }
-            if (action.equals("transmission.bluetooth_device1_disconnected")) {
-                mMagnetConnect1.setChecked(false);
-                mMagnetConnect1.setIcon(R.drawable.ic_bluetooth_disabled_24px);
-                is_device2_connected = true;
-                resetButtonEnable();
-            }
-            if (action.equals("transmission.bluetooth_device2_connected")) {
-                mMagnetConnect2.setChecked(true);
-                mMagnetConnect2.setIcon(R.drawable.ic_bluetooth_connected_24px);
-                is_device2_connected = true;
-                resetButtonEnable();
-            }
-            if (action.equals("transmission.bluetooth_device2_disconnected")) {
-                mMagnetConnect2.setChecked(false);
-                mMagnetConnect2.setIcon(R.drawable.ic_bluetooth_disabled_24px);
-                is_device2_connected = true;
-                resetButtonEnable();
+            if (action.equals("transmission.bluetooth_status")) {
+                mMagnetConnect1.setChecked(params.is_device1_connected);
+                mMagnetConnect2.setChecked(params.is_device2_connected);
+                if(params.is_device1_connected){
+                    mMagnetConnect1.setIcon(R.drawable.ic_bluetooth_connected_24px);
+                }
+                else{
+                    mMagnetConnect1.setIcon(R.drawable.ic_bluetooth_disabled_24px);
+                }
+                if(params.is_device2_connected){
+                    mMagnetConnect2.setIcon(R.drawable.ic_bluetooth_connected_24px);
+                }
+                else{
+                    mMagnetConnect2.setIcon(R.drawable.ic_bluetooth_disabled_24px);
+                }
+                if(params.is_device1_connected || params.is_device2_connected){
+                    mMagnetRecord.setIsClickable(true);
+                    mMagnetDetect.setIsClickable(true);
+                }
+                else{
+                    mMagnetRecord.setIsClickable(false);
+                    mMagnetRecord.setChecked(false);
+                    mMagnetDetect.setIsClickable(false);
+                    mMagnetDetect.setChecked(false);
+                }
             }
         }
     };

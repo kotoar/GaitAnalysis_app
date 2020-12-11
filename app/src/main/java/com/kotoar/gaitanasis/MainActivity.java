@@ -27,9 +27,6 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    public boolean is_data_record;
-    public boolean is_data_analyze;
-    public boolean is_data_exportable;
     public Map<Character, Double> values1 = new HashMap<Character, Double>();
     public Map<Character, Double> values2 = new HashMap<Character, Double>();
 
@@ -41,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     DataStorage mDataStorage2;
     ConnectedThread mConnectionThread2;
     SystemConfig mSystemConfig;
+    ControlParameters params;
 
     ViewPager viewPager;
     TabLayout tablayout;
@@ -56,29 +54,17 @@ public class MainActivity extends AppCompatActivity {
 
         init_map_value();
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("transmission.send_data");
-        intentFilter.addAction("transmission.data_export");
-        intentFilter.addAction("transmission.bluetooth_device1_connect");
-        intentFilter.addAction("transmission.bluetooth_device2_connect");
-        intentFilter.addAction("transmission.data_record");
-        intentFilter.addAction("transmission.data_analyze");
-        intentFilter.addAction("control.start_devices_activity");
-        registerReceiver(mMainBroadcastReceiver, intentFilter);
-
-        is_data_record = false;
-        is_data_analyze = false;
-        is_data_exportable = false;
-
         mSystemConfig = SystemConfig.getInstance();
         mSystemConfig.init_work();
+
+        params = ControlParameters.getInstance();
+        params.init();
 
         mBluetoothProcess1 = new BluetoothProcess(mSystemConfig.getAddressDevice1());
         mBluetoothProcess2 = new BluetoothProcess(mSystemConfig.getAddressDevice2());
         mDataStorage1 = new DataStorage();
         mDataStorage2 = new DataStorage();
         mTimestampSync = new TimestampSync();
-
 
         //MacAddress2 = mSystemConfig.getAddressDevice2();
 
@@ -93,11 +79,14 @@ public class MainActivity extends AppCompatActivity {
         updateTextView(2);
     }
 
-    public void onDestroy(){
-        unregisterReceiver(mMainBroadcastReceiver);
-        //mBluetoothProcess1.disconnect();
-        super.onDestroy();
-
+    private void initViewPager(){
+        tablayout = findViewById(R.id.tabs_layout);
+        viewPager = findViewById(R.id.view_pager);
+        tablayout.setupWithViewPager(viewPager);
+        mSectionPagerAdapter = new SectionPagerAdapter(this, getSupportFragmentManager());
+        viewPager.setAdapter(mSectionPagerAdapter);
+        tablayout.setupWithViewPager(viewPager);
+        //viewPager.setOffscreenPageLimit(2);
     }
 
     private void init_map_value(){
@@ -130,20 +119,44 @@ public class MainActivity extends AppCompatActivity {
         values2.put('s',0.0);
     }
 
-    public void transmitdata_device1(byte[] data, int num){
+    private void requestStoragePermission(){
+        final int REQUEST_EXTERNAL_STORAGE = 1;
+        String[] PERMISSIONS_STORAGE = {
+                "android.permission.READ_EXTERNAL_STORAGE",
+                "android.permission.WRITE_EXTERNAL_STORAGE"
+        };
+        try {
+            int permission = ActivityCompat.checkSelfPermission(this,
+                    "android.permission.WRITE_EXTERNAL_STORAGE");
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void onDestroy(){
+        //mBluetoothProcess1.disconnect();
+        super.onDestroy();
+
+    }
+
+    public void transmitdata_device1(byte[] data){
         mConnectionThread1.write(data);
     }
 
-    public void transmitdata_device2(byte[] data, int num){
+    public void transmitdata_device2(byte[] data){
         mConnectionThread2.write(data);
     }
 
     public void data_export(){
-        is_data_record = false;
         Toast.makeText(this,"exporting",Toast.LENGTH_SHORT).show();
-        mDataStorage1.SaveAsJSON("test");
+        mDataStorage1.SaveAsJSON("test1");
         mDataStorage1.cleardata();
-        is_data_record = true;
+        mDataStorage2.SaveAsJSON("test2");
+        mDataStorage2.cleardata();
         Toast.makeText(this,"exported",Toast.LENGTH_SHORT).show();
     }
 
@@ -177,14 +190,16 @@ public class MainActivity extends AppCompatActivity {
         sendBroadcast(intent);
     }
 
-    private void bluetooth_device1_connect(){
+    public void bluetooth_device1_connect(){
         mBluetoothProcess1.connect();
         mConnectionThread1 = new ConnectedThread(mBluetoothProcess1.mSocket, 1);
-        if(mBluetoothProcess1.isBlueToothConnected){
+        params.is_device1_connected = mBluetoothProcess1.isBlueToothConnected;
+        if(params.is_device1_connected){
             Toast.makeText(this,"Device 1 connected",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
-            intent.setAction("transmission.bluetooth_device1_connected");
+            intent.setAction("transmission.bluetooth_status");
             sendBroadcast(intent);
+            params.device1Connect();
         }
         else{
             Toast.makeText(this,"Device 1 not connected",Toast.LENGTH_SHORT).show();
@@ -192,26 +207,30 @@ public class MainActivity extends AppCompatActivity {
         mConnectionThread1.start();
     }
 
-    private void bluetooth_device1_disconnect(){
+    public void bluetooth_device1_disconnect(){
         if(mBluetoothProcess1.isBlueToothConnected){
             mBluetoothProcess1.disconnect();
-            if(!mBluetoothProcess1.isBlueToothConnected){
+            params.is_device1_connected = mBluetoothProcess1.isBlueToothConnected;
+            if(!params.is_device1_connected){
                 Toast.makeText(this,"Device 1 disconnected",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
-                intent.setAction("transmission.bluetooth_device1_disconnected");
+                intent.setAction("transmission.bluetooth_status");
                 sendBroadcast(intent);
+                params.device1Disconnect();
             }
         }
     }
 
-    private void bluetooth_device2_connect(){
+    public void bluetooth_device2_connect(){
         mBluetoothProcess2.connect();
         mConnectionThread2 = new ConnectedThread(mBluetoothProcess2.mSocket, 2);
-        if(mBluetoothProcess2.isBlueToothConnected){
+        params.is_device2_connected = mBluetoothProcess2.isBlueToothConnected;
+        if(params.is_device2_connected){
             Toast.makeText(this,"Device 2 connected",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
-            intent.setAction("transmission.bluetooth_device2_connected");
+            intent.setAction("transmission.bluetooth_status");
             sendBroadcast(intent);
+            params.device2Connect();
         }
         else{
             Toast.makeText(this,"Device 2 not connected",Toast.LENGTH_SHORT).show();
@@ -219,51 +238,18 @@ public class MainActivity extends AppCompatActivity {
         mConnectionThread2.start();
     }
 
-    private void bluetooth_device2_disconnect(){
+    public void bluetooth_device2_disconnect(){
         if(mBluetoothProcess2.isBlueToothConnected){
             mBluetoothProcess2.disconnect();
-            if(!mBluetoothProcess2.isBlueToothConnected){
+            params.is_device2_connected = mBluetoothProcess2.isBlueToothConnected;
+            if(!params.is_device2_connected){
                 Toast.makeText(this,"Device 2 disconnected",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
-                intent.setAction("transmission.bluetooth_device2_disconnected");
+                intent.setAction("transmission.bluetooth_status");
                 sendBroadcast(intent);
+                params.device2Disconnect();
             }
         }
-    }
-
-    public void startDeviceActivity(){
-        Intent intent = new Intent(MainActivity.this ,DevicesActivity.class);
-        startActivity(intent);
-    }
-
-    private void initViewPager(){
-        tablayout = (TabLayout)findViewById(R.id.tabs_layout);
-        viewPager = (ViewPager)findViewById(R.id.view_pager);
-
-        tablayout.setupWithViewPager(viewPager);
-
-        mSectionPagerAdapter = new SectionPagerAdapter(this, getSupportFragmentManager());
-        viewPager.setAdapter(mSectionPagerAdapter);
-        tablayout.setupWithViewPager(viewPager);
-        //viewPager.setOffscreenPageLimit(2);
-    }
-
-    private void requestStoragePermission(){
-        final int REQUEST_EXTERNAL_STORAGE = 1;
-        String[] PERMISSIONS_STORAGE = {
-                "android.permission.READ_EXTERNAL_STORAGE",
-                "android.permission.WRITE_EXTERNAL_STORAGE"
-        };
-        try {
-            int permission = ActivityCompat.checkSelfPermission(this,
-                    "android.permission.WRITE_EXTERNAL_STORAGE");
-            if (permission != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     private class ConnectedThread extends Thread {
@@ -369,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
 
                             reading_value = 0;
                             reading_step = 1;
-                            if(is_data_record && reading_type=='t' || reading_type=='r' || reading_type=='s'){
+                            if(params.isRecording() && reading_type=='t' || reading_type=='r' || reading_type=='s'){
                                 if(reading_type=='t'){
                                     if(deviceIndex==1){
                                         mDataStorage1.addimu3(values1.get('x'), values1.get('y'), values1.get('z'), values1.get('t'));
@@ -426,68 +412,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-    private BroadcastReceiver mMainBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals("transmission.send_data")){
-                char ctrl_type = intent.getCharExtra("ctrl", '0');
-                int value = intent.getIntExtra("value", 0);
-                int device = intent.getIntExtra("device", 0);
-                byte[] data = {(byte)ctrl_type, (byte)value};
-                transmitdata_device1(data, device);
-            }
-            if (action.equals("transmission.data_export")){
-                data_export();
-            }
-            if (action.equals("transmission.data_record")){
-                if(is_data_record){     //stop record and enable export
-                    is_data_record = false;
-                    is_data_exportable = true;
-                    Intent sendintent = new Intent();
-                    sendintent.setAction("transmission.export_enable");
-                    sendBroadcast(sendintent);
-                }
-                else{       //begin record and start timer
-                    is_data_record = true;
-                    is_data_exportable = false;
-                    Intent sendintent = new Intent();
-                    sendintent.setAction("transmission.export_disable");
-                    sendBroadcast(sendintent);
-                    mDataStorage1.cleardata();
-                    mTimestampSync.setTimestamp();
-                }
-            }
-            if (action.equals("transmission.data_analyze")){
-                if(is_data_analyze){
-                    is_data_analyze = false;
-                }
-                else{
-                    is_data_analyze = true;
-                }
-            }
-            if (action.equals("transmission.bluetooth_device1_connect")){
-                if(!mBluetoothProcess1.isBlueToothConnected){
-                    bluetooth_device1_connect();
-                }
-                else{
-                    bluetooth_device1_disconnect();
-                }
-            }
-            if (action.equals("transmission.bluetooth_device2_connect")){
-                if(!mBluetoothProcess2.isBlueToothConnected){
-                    bluetooth_device2_connect();
-                }
-                else{
-                    bluetooth_device2_disconnect();
-                }
-            }
-            if (action.equals("control.start_devices_activity")){
-                startDeviceActivity();
-            }
-        }
-    };
 
     Handler handler = new Handler() {
         @Override

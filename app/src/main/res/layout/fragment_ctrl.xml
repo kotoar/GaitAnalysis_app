@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <com.kotoar.gaitanasis.MagnetView
         android:id="@+id/magnet_bluetoothsetup"
         android:layout_width="wrap_content"
@@ -23,13 +22,23 @@
         app:Content="Save the data in format of json"
         app:Icon="@drawable/ic_eject_24px"/>
 
-    <com.kotoar.gaitanasis.MagnetView
+    <com.kotoar.gaitanasis.MagnetSelectView
+        android:id="@+id/magnet_imucalibration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:SelectLabel="Accelerometer Calibration"
+        app:SelectContent="Calibrating accelerometer, usually takes 20 seconds"
+        app:SelectIcon="@drawable/ic_speed_24px"
+        app:SelectSelectedIcon="@drawable/ic_looks_one_24px"/>
+
+    <com.kotoar.gaitanasis.MagnetSelectView
         android:id="@+id/magnet_magcalibration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:Label="Magnetometer Calibration"
-        app:Content="Calibrating magnetometer, usually takes 20 seconds"
-        app:Icon="@drawable/ic_explore_24px"/>
+        app:SelectLabel="Magnetometer Calibration"
+        app:SelectContent="Calibrating magnetometer, usually takes 20 seconds"
+        app:SelectIcon="@drawable/ic_explore_24px"
+        app:SelectSelectedIcon="@drawable/ic_looks_one_24px"/>
 
     <com.kotoar.gaitanasis.MagnetSwitchView
         android:id="@+id/magnet_ledtest"

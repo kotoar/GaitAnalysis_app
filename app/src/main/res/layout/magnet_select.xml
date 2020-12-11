@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/magnet_switch_layout"
+    android:id="@+id/magnet_select_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -28,7 +28,7 @@
                 android:background="@drawable/magnet_style" />
 
             <ImageView
-                android:id="@+id/magnet_switch_image_icon"
+                android:id="@+id/magnet_select_image_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_settings_bluetooth_24px"
@@ -61,23 +61,30 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <Switch
-                    android:id="@+id/magnet_switch_label"
+                <TextView
+                    android:id="@+id/magnet_select_label"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
-                    android:layout_weight="1"
+                    android:layout_weight="16"
                     android:background="@drawable/magnet_style"
-                    android:clickable="false"
-                    android:contextClickable="false"
-                    android:linksClickable="false"
-                    android:text="Switch"
-                    android:textSize="18sp"
-                    android:visibility="visible" />
+                    android:textColor="#000000"
+                    android:textSize="18dp" />
+
+                <ImageView
+                    android:id="@+id/image_select_selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_looks_one_24px"
+                    android:background="@drawable/magnet_style"/>
 
                 <View
+                    android:id="@+id/view"
                     android:layout_width="18dp"
                     android:layout_height="28dp"
+                    android:layout_weight="1"
                     android:background="@drawable/magnet_style" />
+
             </LinearLayout>
 
             <View
@@ -86,7 +93,7 @@
                 android:background="@drawable/magnet_style" />
 
             <TextView
-                android:id="@+id/magnet_switch_content"
+                android:id="@+id/magnet_select_content"
                 android:layout_width="match_parent"
                 android:layout_height="14dp"
                 android:background="@drawable/magnet_style"

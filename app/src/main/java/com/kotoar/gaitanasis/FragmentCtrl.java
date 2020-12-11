@@ -18,42 +18,23 @@ import androidx.fragment.app.Fragment;
 
 public class FragmentCtrl extends Fragment {
 
+    ControlParameters params;
     MagnetView mMagnetDevices;
     MagnetView mMagnetExport;
-    MagnetView mMagnetMagcali;
+    MagnetSelectView mMagnetImucali;
+    MagnetSelectView mMagnetMagcali;
     MagnetSwitchView mMagnetLED;
 
-    private BroadcastReceiver mCtrlReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals("transmission.bluetooth_connected")) {
-                mMagnetMagcali.setIsClickable(true);
-                mMagnetLED.setIsClickable(true);
-            }
-            if (action.equals("transmission.bluetooth_disconnected")) {
-                mMagnetMagcali.setIsClickable(false);
-                mMagnetLED.setIsClickable(false);
-                mMagnetLED.setChecked(false);
-            }
-            if (action.equals("transmission.export_enable")) {
-                mMagnetExport.setIsClickable(true);
-            }
-            if (action.equals("transmission.export_disable")) {
-                mMagnetExport.setIsClickable(false);
-            }
-        }
-    };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IntentFilter filter = new IntentFilter();
-        filter.addAction("transmission.bluetooth_connected");
-        filter.addAction("transmission.bluetooth_disconnected");
-        filter.addAction("transmission.export_enable");
-        filter.addAction("transmission.export_disable");
+        filter.addAction("transmission.bluetooth_status");
+        filter.addAction("transmission.record_status");
         getActivity().getApplicationContext().registerReceiver(mCtrlReceiver, filter);
+        params = ControlParameters.getInstance();
     }
 
     @Override
@@ -64,6 +45,7 @@ public class FragmentCtrl extends Fragment {
 
         mMagnetDevices = view.findViewById(R.id.magnet_bluetoothsetup);
         mMagnetExport = view.findViewById(R.id.magnet_dataexport);
+        mMagnetImucali = view.findViewById(R.id.magnet_imucalibration);
         mMagnetMagcali = view.findViewById(R.id.magnet_magcalibration);
         mMagnetLED = view.findViewById(R.id.magnet_ledtest);
 
@@ -71,13 +53,11 @@ public class FragmentCtrl extends Fragment {
         mMagnetMagcali.setIsClickable(false);
         mMagnetLED.setIsClickable(false);
 
-
         mMagnetDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction("control.start_devices_activity");
-                getActivity().sendBroadcast(intent);
+                Intent intent = new Intent(getActivity(),DevicesActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -90,9 +70,14 @@ public class FragmentCtrl extends Fragment {
                     handler.sendMessage(msg);
                     return;
                 }
-                Intent intent = new Intent();
-                intent.setAction("transmission.data_export");
-                getActivity().sendBroadcast(intent);
+                ((MainActivity)getActivity()).data_export();
+            }
+        });
+
+        mMagnetImucali.getViewSelected().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMagnetImucali.turn();
             }
         });
 
@@ -108,6 +93,13 @@ public class FragmentCtrl extends Fragment {
             }
         });
 
+        mMagnetMagcali.getViewSelected().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMagnetMagcali.turn();
+            }
+        });
+
         mMagnetLED.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -119,19 +111,43 @@ public class FragmentCtrl extends Fragment {
                 }
                 if(mMagnetLED.getChecked()){
                     mMagnetLED.turn();
-                    transmit_data('d',0,0);
+                    byte[] data = {'d', 0};
+                    if(params.is_device1_connected){
+                        ((MainActivity)getActivity()).transmitdata_device1(data);
+                    }
+                    if(params.is_device2_connected){
+                        ((MainActivity)getActivity()).transmitdata_device2(data);
+                    }
                 }
                 else{
                     mMagnetLED.turn();
-                    transmit_data('l',0,0);
+                    byte[] data = {'l', 0};
+                    if(params.is_device1_connected){
+                        ((MainActivity)getActivity()).transmitdata_device1(data);
+                    }
+                    if(params.is_device2_connected){
+                        ((MainActivity)getActivity()).transmitdata_device2(data);
+                    }
                 }
-
             }
         });
 
         return view;
-
     }
+
+    private BroadcastReceiver mCtrlReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals("transmission.bluetooth_status")) {
+                mMagnetMagcali.setIsClickable(params.magCaliClickable());
+                mMagnetLED.setIsClickable(params.transmitClickable());
+            }
+            if (action.equals("transmission.record_status")) {
+                mMagnetExport.setIsClickable(params.exportClickable());
+            }
+        }
+    };
 
     Handler handler = new Handler() {
         @Override
@@ -141,14 +157,4 @@ public class FragmentCtrl extends Fragment {
             Toast.makeText(getActivity(),(String)msg.obj,Toast.LENGTH_SHORT).show();
         }
     };
-
-    void transmit_data(char type, int value, int device){
-        Intent intent = new Intent();
-        intent.setAction("transmission.send_data");
-        intent.putExtra("ctrl", type);
-        intent.putExtra("value", value);
-        intent.putExtra("device",device);
-        getActivity().sendBroadcast(intent);
-    }
-
 }

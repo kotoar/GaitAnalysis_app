@@ -10,4 +10,10 @@
         <attr name="SwitchContent" format="string" />
         <attr name="SwitchIcon" format="reference" />
     </declare-styleable>
+    <declare-styleable name="MagnetSelectView">
+        <attr name="SelectLabel" format="string" />
+        <attr name="SelectContent" format="string" />
+        <attr name="SelectIcon" format="reference" />
+        <attr name="SelectSelectedIcon" format="reference" />
+    </declare-styleable>
 </resources>
