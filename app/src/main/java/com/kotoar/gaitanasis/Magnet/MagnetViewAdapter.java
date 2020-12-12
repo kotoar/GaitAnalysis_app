@@ -1,4 +1,4 @@
-package com.kotoar.gaitanasis;
+package com.kotoar.gaitanasis.Magnet;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.kotoar.gaitanasis.DevicesInformation;
+import com.kotoar.gaitanasis.R;
 
 import java.util.ArrayList;
 import java.util.List;

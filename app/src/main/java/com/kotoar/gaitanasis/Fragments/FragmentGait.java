@@ -1,4 +1,4 @@
-package com.kotoar.gaitanasis;
+package com.kotoar.gaitanasis.Fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +13,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.kotoar.gaitanasis.ControlParameters;
+import com.kotoar.gaitanasis.DrawView;
+import com.kotoar.gaitanasis.Magnet.MagnetSwitchView;
+import com.kotoar.gaitanasis.MainActivity;
+import com.kotoar.gaitanasis.R;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -233,7 +239,4 @@ public class FragmentGait extends Fragment {
             Toast.makeText(getActivity(),(String)msg.obj,Toast.LENGTH_SHORT).show();
         }
     };
-
-
-
 }

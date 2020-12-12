@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.kotoar.gaitanasis.MagnetView
+    <com.kotoar.gaitanasis.Magnet.MagnetView
         android:id="@+id/magnet_bluetoothsetup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         app:Content="Search and connect to Bluetooth devices nearby"
         app:Icon="@drawable/ic_settings_bluetooth_24px"/>
 
-    <com.kotoar.gaitanasis.MagnetView
+    <com.kotoar.gaitanasis.Magnet.MagnetView
         android:id="@+id/magnet_dataexport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         app:Content="Save the data in format of json"
         app:Icon="@drawable/ic_eject_24px"/>
 
-    <com.kotoar.gaitanasis.MagnetSelectView
+    <com.kotoar.gaitanasis.Magnet.MagnetSelectView
         android:id="@+id/magnet_imucalibration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         app:SelectIcon="@drawable/ic_speed_24px"
         app:SelectSelectedIcon="@drawable/ic_looks_one_24px"/>
 
-    <com.kotoar.gaitanasis.MagnetSelectView
+    <com.kotoar.gaitanasis.Magnet.MagnetSelectView
         android:id="@+id/magnet_magcalibration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         app:SelectIcon="@drawable/ic_explore_24px"
         app:SelectSelectedIcon="@drawable/ic_looks_one_24px"/>
 
-    <com.kotoar.gaitanasis.MagnetSwitchView
+    <com.kotoar.gaitanasis.Magnet.MagnetSwitchView
         android:id="@+id/magnet_ledtest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
         app:SwitchContent="Turn on/off the light to text the connection"
         app:SwitchIcon="@drawable/ic_highlight_24px"/>
 
-    <com.kotoar.gaitanasis.MagnetView
+    <com.kotoar.gaitanasis.Magnet.MagnetView
         android:id="@+id/magnet_battery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

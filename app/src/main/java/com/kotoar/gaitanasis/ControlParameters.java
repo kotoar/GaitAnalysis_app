@@ -138,24 +138,6 @@ public class ControlParameters {
         return device2_exportable;
     }
 
-    public void set_cube_drawed(int index){
-        if(index==1){
-            if_draw_cube1 = true;
-        }
-        else{
-            if_draw_cube2 = true;
-        }
-    }
-
-    public void reset_cube_drawed(int index){
-        if(index==1){
-            if_draw_cube1 = false;
-        }
-        else{
-            if_draw_cube2 = false;
-        }
-    }
-
     public boolean cube_drawable(int index){
         if(index==1){
             return if_draw_cube1;

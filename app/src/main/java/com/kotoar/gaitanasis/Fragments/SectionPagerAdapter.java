@@ -1,7 +1,11 @@
-package com.kotoar.gaitanasis;
+package com.kotoar.gaitanasis.Fragments;
 
 import android.content.Context;
 import android.view.ViewGroup;
+
+import com.kotoar.gaitanasis.Fragments.FragmentCtrl;
+import com.kotoar.gaitanasis.Fragments.FragmentGait;
+import com.kotoar.gaitanasis.R;
 
 import java.util.ArrayList;
 import java.util.List;

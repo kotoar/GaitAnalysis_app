@@ -1,4 +1,4 @@
-package com.kotoar.gaitanasis;
+package com.kotoar.gaitanasis.Magnet;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.kotoar.gaitanasis.R;
 
 public class MagnetSelectView extends LinearLayout {
 
@@ -102,8 +104,6 @@ public class MagnetSelectView extends LinearLayout {
             textViewLabel.setTextColor(getResources().getColor(R.color.colorMagnetDisable));
         }
     }
-
-
 
     public boolean getSelect(){
         return selected;

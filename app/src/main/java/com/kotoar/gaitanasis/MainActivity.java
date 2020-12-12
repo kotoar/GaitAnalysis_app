@@ -6,10 +6,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.kotoar.gaitanasis.Fragments.SectionPagerAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;

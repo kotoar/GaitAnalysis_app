@@ -219,7 +219,7 @@
 
 
 
-    <com.kotoar.gaitanasis.MagnetSwitchView
+    <com.kotoar.gaitanasis.Magnet.MagnetSwitchView
         android:id="@+id/magnet_switch_connect_device1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -227,7 +227,7 @@
         app:SwitchContent="Connect to selected devices"
         app:SwitchIcon="@drawable/ic_bluetooth_disabled_24px"/>
 
-    <com.kotoar.gaitanasis.MagnetSwitchView
+    <com.kotoar.gaitanasis.Magnet.MagnetSwitchView
         android:id="@+id/magnet_switch_connect_device2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -235,7 +235,7 @@
         app:SwitchContent="Connect to selected devices"
         app:SwitchIcon="@drawable/ic_bluetooth_disabled_24px"/>
 
-    <com.kotoar.gaitanasis.MagnetSwitchView
+    <com.kotoar.gaitanasis.Magnet.MagnetSwitchView
         android:id="@+id/magnet_switch_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -243,7 +243,7 @@
         app:SwitchContent="Select to enable data storage"
         app:SwitchIcon="@drawable/ic_create_new_folder_24px"/>
 
-    <com.kotoar.gaitanasis.MagnetSwitchView
+    <com.kotoar.gaitanasis.Magnet.MagnetSwitchView
         android:id="@+id/magnet_switch_detect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

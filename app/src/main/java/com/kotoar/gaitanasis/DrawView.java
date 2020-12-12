@@ -49,7 +49,6 @@ public class DrawView extends View {
         cube_vertices=translate(cube_vertices,position[0],position[1],position[2]);
         mPosition = position;
         mIndex = index;
-
         //thisview.invalidate();//update the view
     }
 
@@ -216,10 +215,7 @@ public class DrawView extends View {
         result.w=matrix[12]*vertex.x+matrix[13]*vertex.y+matrix[14]*vertex.z+matrix[15];
         return result;
     }
-    public Coordinate[]Transformation(Coordinate []vertices,double []matrix)
-    {   //Affine transform a 3D object with vertices
-        // vertices - vertices of the 3D object.
-        // matrix - transformation matrix
+    public Coordinate[]Transformation(Coordinate []vertices,double []matrix){
         Coordinate []result=new Coordinate[vertices.length];
         for (int i=0;i<vertices.length;i++)
         {
