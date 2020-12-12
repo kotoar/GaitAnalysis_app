@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kotoar.gaitanasis.R;
+
 public class MagnetView extends LinearLayout {
 
     LayoutInflater layoutInflater;
