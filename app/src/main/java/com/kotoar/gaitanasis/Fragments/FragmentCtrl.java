@@ -25,14 +25,12 @@ import androidx.fragment.app.Fragment;
 
 public class FragmentCtrl extends Fragment {
 
-    ControlParameters params;
-    MagnetView mMagnetDevices;
-    MagnetView mMagnetExport;
-    MagnetSelectView mMagnetImucali;
-    MagnetSelectView mMagnetMagcali;
-    MagnetSwitchView mMagnetLED;
-
-
+    private ControlParameters params;
+    private MagnetView mMagnetDevices;
+    private MagnetView mMagnetExport;
+    private MagnetSelectView mMagnetImucali;
+    private MagnetSelectView mMagnetMagcali;
+    private MagnetSwitchView mMagnetLED;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
