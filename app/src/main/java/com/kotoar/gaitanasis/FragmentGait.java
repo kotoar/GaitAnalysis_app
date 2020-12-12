@@ -10,6 +10,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,12 @@ public class FragmentGait extends Fragment {
     MagnetSwitchView mMagnetConnect2;
     MagnetSwitchView mMagnetRecord;
     MagnetSwitchView mMagnetDetect;
+
+    LinearLayout layoutdrawing1;
+    LinearLayout layoutdrawing2;
+
+    private DrawView draw_view1;
+    private DrawView draw_view2;
 
     ControlParameters params;
 
@@ -83,6 +90,16 @@ public class FragmentGait extends Fragment {
         mMagnetConnect2 = view.findViewById(R.id.magnet_switch_connect_device2);
         mMagnetRecord = view.findViewById(R.id.magnet_switch_record);
         mMagnetDetect = view.findViewById(R.id.magnet_switch_detect);
+
+        Integer[] pos1 = {200,180,0};
+        Integer[] pos2 = {200,180,0};
+        draw_view1 = new DrawView(getContext(),pos1,1);
+        draw_view2 = new DrawView(getContext(),pos2,2);
+
+        layoutdrawing1 = view.findViewById(R.id.layout_drawview1);
+        layoutdrawing2 = view.findViewById(R.id.layout_drawview2);
+        layoutdrawing1.addView(draw_view1);
+        layoutdrawing2.addView(draw_view2);
 
         mMagnetRecord.setIsClickable(false);
         mMagnetDetect.setIsClickable(false);
@@ -150,26 +167,34 @@ public class FragmentGait extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals("action.update_showing1")) {
-                textview_device1_x.setText("x: " + String.valueOf(intent.getDoubleExtra("x", 0.0)));
-                textview_device1_y.setText("y: " + String.valueOf(intent.getDoubleExtra("y", 0.0)));
-                textview_device1_z.setText("z: " + String.valueOf(intent.getDoubleExtra("z", 0.0)));
+                double[] gravity = {intent.getDoubleExtra("x", 0.0),
+                        intent.getDoubleExtra("y", 0.0),
+                        intent.getDoubleExtra("z", 0.0)};
+                textview_device1_x.setText("x: " + String.valueOf(gravity[0]));
+                textview_device1_y.setText("y: " + String.valueOf(gravity[1]));
+                textview_device1_z.setText("z: " + String.valueOf(gravity[2]));
                 textview_device1_a.setText("a: " + String.valueOf(intent.getDoubleExtra("a", 0.0)));
                 textview_device1_b.setText("b: " + String.valueOf(intent.getDoubleExtra("b", 0.0)));
                 textview_device1_c.setText("c: " + String.valueOf(intent.getDoubleExtra("c", 0.0)));
                 textview_device1_l.setText("l: " + String.valueOf(intent.getDoubleExtra("l", 0.0)));
                 textview_device1_m.setText("m: " + String.valueOf(intent.getDoubleExtra("m", 0.0)));
                 textview_device1_n.setText("n: " + String.valueOf(intent.getDoubleExtra("n", 0.0)));
+                draw_view1.updateview(gravity);
             }
             if (action.equals("action.update_showing2")) {
-                textview_device2_x.setText("x: " + String.valueOf(intent.getDoubleExtra("x", 0.0)));
-                textview_device2_y.setText("y: " + String.valueOf(intent.getDoubleExtra("y", 0.0)));
-                textview_device2_z.setText("z: " + String.valueOf(intent.getDoubleExtra("z", 0.0)));
+                double[] gravity = {intent.getDoubleExtra("x", 0.0),
+                        intent.getDoubleExtra("y", 0.0),
+                        intent.getDoubleExtra("z", 0.0)};
+                textview_device2_x.setText("x: " + String.valueOf(gravity[0]));
+                textview_device2_y.setText("y: " + String.valueOf(gravity[1]));
+                textview_device2_z.setText("z: " + String.valueOf(gravity[2]));
                 textview_device2_a.setText("a: " + String.valueOf(intent.getDoubleExtra("a", 0.0)));
                 textview_device2_b.setText("b: " + String.valueOf(intent.getDoubleExtra("b", 0.0)));
                 textview_device2_c.setText("c: " + String.valueOf(intent.getDoubleExtra("c", 0.0)));
                 textview_device2_l.setText("l: " + String.valueOf(intent.getDoubleExtra("l", 0.0)));
                 textview_device2_m.setText("m: " + String.valueOf(intent.getDoubleExtra("m", 0.0)));
                 textview_device2_n.setText("n: " + String.valueOf(intent.getDoubleExtra("n", 0.0)));
+                draw_view2.updateview(gravity);
             }
             if (action.equals("transmission.bluetooth_status")) {
                 mMagnetConnect1.setChecked(params.is_device1_connected);

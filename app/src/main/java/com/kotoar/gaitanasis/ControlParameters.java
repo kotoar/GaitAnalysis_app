@@ -1,5 +1,7 @@
 package com.kotoar.gaitanasis;
 
+//Singleton: Store global parameters (shared in MainActivity, FragCtrl, FragGait)
+
 public class ControlParameters {
 
     private static ControlParameters instance = new ControlParameters();
@@ -15,6 +17,10 @@ public class ControlParameters {
     private boolean device1_exportable;
     private boolean device2_exportable;
 
+    private boolean if_draw_cube1;
+    private boolean if_draw_cube2;
+
+
     public boolean is_device1_connected;
     public boolean is_device2_connected;
 
@@ -25,22 +31,28 @@ public class ControlParameters {
         device2_exportable = false;
         is_device1_connected = false;
         is_device2_connected = false;
+        if_draw_cube1 = false;
+        if_draw_cube2 = false;
     }
 
     public void device1Connect(){
         is_device1_connected = true;
+        if_draw_cube1 = true;
     }
 
     public void device2Connect(){
         is_device2_connected = true;
+        if_draw_cube2 = true;
     }
 
     public void device1Disconnect(){
         is_device1_connected = false;
+        if_draw_cube1 = false;
     }
 
     public void device2Disconnect(){
         is_device2_connected = false;
+        if_draw_cube2 = false;
     }
 
     public void recordClick(){
@@ -124,6 +136,31 @@ public class ControlParameters {
 
     public boolean device2CanExport(){
         return device2_exportable;
+    }
+
+    public void set_cube_drawed(int index){
+        if(index==1){
+            if_draw_cube1 = true;
+        }
+        else{
+            if_draw_cube2 = true;
+        }
+    }
+
+    public void reset_cube_drawed(int index){
+        if(index==1){
+            if_draw_cube1 = false;
+        }
+        else{
+            if_draw_cube2 = false;
+        }
+    }
+
+    public boolean cube_drawable(int index){
+        if(index==1){
+            return if_draw_cube1;
+        }
+        return if_draw_cube2;
     }
 
 }
