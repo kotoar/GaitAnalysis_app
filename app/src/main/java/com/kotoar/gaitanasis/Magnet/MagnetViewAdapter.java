@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.kotoar.gaitanasis.DevicesInformation;
+import com.kotoar.gaitanasis.NewDevices.DevicesInformation;
 import com.kotoar.gaitanasis.R;
 
 import java.util.ArrayList;

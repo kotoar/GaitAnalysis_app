@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.kotoar.gaitanasis.ControlParameters;
-import com.kotoar.gaitanasis.DevicesActivity;
+import com.kotoar.gaitanasis.NewDevices.DevicesActivity;
 import com.kotoar.gaitanasis.Magnet.MagnetSelectView;
 import com.kotoar.gaitanasis.Magnet.MagnetSwitchView;
 import com.kotoar.gaitanasis.Magnet.MagnetView;

@@ -30,10 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
     TimestampSync mTimestampSync;
     BluetoothProcess mBluetoothProcess1;
-    DataStorage mDataStorage1;
+    AnalysisData mAnalysisData1;
     ConnectedThread mConnectionThread1;
     BluetoothProcess mBluetoothProcess2;
-    DataStorage mDataStorage2;
+    AnalysisData mAnalysisData2;
     ConnectedThread mConnectionThread2;
     SystemConfig mSystemConfig;
     ControlParameters params;
@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
         mBluetoothProcess1 = new BluetoothProcess(mSystemConfig.getAddressDevice1());
         mBluetoothProcess2 = new BluetoothProcess(mSystemConfig.getAddressDevice2());
-        mDataStorage1 = new DataStorage();
-        mDataStorage2 = new DataStorage();
+        mAnalysisData1 = new AnalysisData();
+        mAnalysisData2 = new AnalysisData();
         mTimestampSync = new TimestampSync();
 
         //MacAddress2 = mSystemConfig.getAddressDevice2();
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         mSectionPagerAdapter = new SectionPagerAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(mSectionPagerAdapter);
         tablayout.setupWithViewPager(viewPager);
-        //viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(2);
     }
 
     private void init_map_value(){
@@ -151,10 +151,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void data_export(){
         Toast.makeText(this,"exporting",Toast.LENGTH_SHORT).show();
-        mDataStorage1.SaveAsJSON("test1");
-        mDataStorage1.cleardata();
-        mDataStorage2.SaveAsJSON("test2");
-        mDataStorage2.cleardata();
+        mAnalysisData1.SaveAsJSON("test1");
+        mAnalysisData1.cleardata();
+        mAnalysisData2.SaveAsJSON("test2");
+        mAnalysisData2.cleardata();
         Toast.makeText(this,"exported",Toast.LENGTH_SHORT).show();
     }
 
@@ -356,18 +356,18 @@ public class MainActivity extends AppCompatActivity {
                             if(params.isRecording() && reading_type=='t' || reading_type=='r' || reading_type=='s'){
                                 if(reading_type=='t'){
                                     if(deviceIndex==1){
-                                        mDataStorage1.addimu3(values1.get('x'), values1.get('y'), values1.get('z'), values1.get('t'));
+                                        mAnalysisData1.addimu3(values1.get('x'), values1.get('y'), values1.get('z'), values1.get('t'));
                                     }
                                     else{
-                                        mDataStorage2.addimu3(values2.get('x'), values2.get('y'), values2.get('z'), values2.get('t'));
+                                        mAnalysisData2.addimu3(values2.get('x'), values2.get('y'), values2.get('z'), values2.get('t'));
                                     }
                                 }
                                 if(reading_type=='r'){
                                     if(deviceIndex==1){
-                                        mDataStorage1.addmag(values1.get('l'), values1.get('m'), values1.get('n'), values1.get('r'));
+                                        mAnalysisData1.addmag(values1.get('l'), values1.get('m'), values1.get('n'), values1.get('r'));
                                     }
                                     else{
-                                        mDataStorage2.addmag(values2.get('l'), values2.get('m'), values2.get('n'), values2.get('r'));
+                                        mAnalysisData2.addmag(values2.get('l'), values2.get('m'), values2.get('n'), values2.get('r'));
                                     }
                                 }
                                 if(reading_type=='s'){

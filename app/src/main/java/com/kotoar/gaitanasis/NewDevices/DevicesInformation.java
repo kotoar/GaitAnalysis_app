@@ -1,4 +1,6 @@
-package com.kotoar.gaitanasis;
+package com.kotoar.gaitanasis.NewDevices;
+
+import com.kotoar.gaitanasis.R;
 
 public class DevicesInformation {
 

@@ -1,3 +1,9 @@
+/*
+* Manage and keep a bluetooth connection
+* the connected thread is define in main activity
+* */
+
+
 package com.kotoar.gaitanasis;
 
 import android.bluetooth.BluetoothAdapter;
@@ -17,8 +23,6 @@ import java.util.UUID;
 import static android.content.ContentValues.TAG;
 
 public class BluetoothProcess {
-
-
 
     private String MacAddress;
     static final UUID SerialPort_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");

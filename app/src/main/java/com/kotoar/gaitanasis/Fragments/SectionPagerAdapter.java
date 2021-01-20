@@ -19,7 +19,7 @@ public class SectionPagerAdapter extends FragmentPagerAdapter {
 
     private final Context mContext;
     private FragmentManager mFragmentManager;
-    private static final int[] tab_titles = new int[]{R.string.tab_text_gait, R.string.tab_text_ctrl};
+    private static final int[] tab_titles = new int[]{R.string.tab_text_gait, R.string.tab_text_rocords,R.string.tab_text_ctrl};
     List<String> tags = new ArrayList<>();
 
     public SectionPagerAdapter(Context context, FragmentManager fragmentManager){
@@ -33,6 +33,9 @@ public class SectionPagerAdapter extends FragmentPagerAdapter {
         if(position == 0){
             return new FragmentGait();
         }
+        else if(position == 1){
+            return new FragmentRocords();
+        }
         return new FragmentCtrl();
     }
 
@@ -45,7 +48,7 @@ public class SectionPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Override

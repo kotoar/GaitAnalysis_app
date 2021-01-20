@@ -1,5 +1,8 @@
-package com.kotoar.gaitanasis;
+/*
+* Realtime analysis & data output
+* */
 
+package com.kotoar.gaitanasis;
 
 import android.os.Environment;
 import android.util.Log;
@@ -16,16 +19,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /** json data structure
- * > leftimu
+ * > imu
  * >> [x,y,z,a,b,c,t]
- * > leftmag
+ * > mag
  * >> [x(l),y(m),z(n),t(r)]
- * >leftstrain
+ * > strain
  * >> [1,2,3,4,5,6,7,8,t(s)]
  */
 
 
-public class DataStorage {
+public class AnalysisData {
 
     private final String json_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/gaitanalysis/data";
 
@@ -33,7 +36,7 @@ public class DataStorage {
     ArrayList<ArrayList<Double>> dataMag;
     ArrayList<ArrayList<Double>> dataStrain;
 
-    public DataStorage(){
+    public AnalysisData(){
         dataIMU = new ArrayList<>();
         dataMag = new ArrayList<>();
         dataStrain = new ArrayList<>();

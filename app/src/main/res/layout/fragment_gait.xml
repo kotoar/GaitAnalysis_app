@@ -239,9 +239,9 @@
         android:id="@+id/magnet_switch_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:SwitchLabel="Record"
-        app:SwitchContent="Select to enable data storage"
-        app:SwitchIcon="@drawable/ic_create_new_folder_24px"/>
+        app:SwitchContent="Click here to change Record Name"
+        app:SwitchIcon="@drawable/ic_create_new_folder_24px"
+        app:SwitchLabel="Record" />
 
     <com.kotoar.gaitanasis.Magnet.MagnetSwitchView
         android:id="@+id/magnet_switch_detect"

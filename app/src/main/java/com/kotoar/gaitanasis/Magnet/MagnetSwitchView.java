@@ -1,15 +1,20 @@
 package com.kotoar.gaitanasis.Magnet;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kotoar.gaitanasis.R;
 
@@ -27,6 +32,7 @@ public class MagnetSwitchView extends LinearLayout {
 
     private boolean is_on;
     private boolean is_clickable;
+    private boolean is_content_changable;
 
     public MagnetSwitchView(Context context){
         super(context);
@@ -45,14 +51,14 @@ public class MagnetSwitchView extends LinearLayout {
         initView(context);
     }
 
-    private void initMagnetView(Context context, AttributeSet attrs){
+    protected void initMagnetView(Context context, AttributeSet attrs){
         TypedArray mTypedArray = context.obtainStyledAttributes(attrs, R.styleable.MagnetSwitchView);
         label = mTypedArray.getString(R.styleable.MagnetSwitchView_SwitchLabel);
         content = mTypedArray.getString(R.styleable.MagnetSwitchView_SwitchContent);
         icon = mTypedArray.getResourceId(R.styleable.MagnetSwitchView_SwitchIcon, 0);
     }
 
-    private void initView(Context context){
+    protected void initView(Context context){
         layoutInflater.from(context).inflate(R.layout.magnet_switch, this, true);
         linearLayout = findViewById(R.id.magnet_switch_layout);
         textViewLabel = findViewById(R.id.magnet_switch_label);
@@ -70,6 +76,7 @@ public class MagnetSwitchView extends LinearLayout {
         }
         is_on = false;
         is_clickable = false;
+        is_content_changable = false;
     }
 
     public void turn(){
@@ -107,6 +114,30 @@ public class MagnetSwitchView extends LinearLayout {
 
     public void setIcon(Integer resid){
         imageView.setImageResource(resid);
+    }
+
+    public void setChangable(){
+        is_content_changable = true;
+        textViewContent.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                content_change(textViewLabel);
+            }
+        });
+    }
+
+    private void content_change(View view){
+        final EditText input_content = new EditText(getContext());
+        new AlertDialog.Builder(getContext()).setTitle("Set Record Name")
+                //.setIcon(android.R.drawable.sym_def_app_icon)
+                .setView(input_content)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        content = "Record: " + input_content.getText().toString();
+                        textViewContent.setText(content);
+                    }
+                }).setNegativeButton("cancel",null).show();
     }
 
 }

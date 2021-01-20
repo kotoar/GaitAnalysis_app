@@ -1,4 +1,4 @@
-package com.kotoar.gaitanasis;
+package com.kotoar.gaitanasis.NewDevices;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kotoar.gaitanasis.Magnet.MagnetViewAdapter;
+import com.kotoar.gaitanasis.R;
+import com.kotoar.gaitanasis.SystemConfig;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;

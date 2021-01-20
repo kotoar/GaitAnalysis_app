@@ -47,7 +47,7 @@ public class MagnetSelectView extends LinearLayout {
         initView(context);
     }
 
-    private void initMagnetView(Context context, AttributeSet attrs){
+    public void initMagnetView(Context context, AttributeSet attrs){
         TypedArray mTypedArray = context.obtainStyledAttributes(attrs, R.styleable.MagnetSelectView);
         label = mTypedArray.getString(R.styleable.MagnetSelectView_SelectLabel);
         content = mTypedArray.getString(R.styleable.MagnetSelectView_SelectContent);
