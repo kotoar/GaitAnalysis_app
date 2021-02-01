@@ -15,7 +15,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.kotoar.gaitanasis.Connection.TimestampSync;
 import com.kotoar.gaitanasis.Fragments.SectionPagerAdapter;
+import com.kotoar.gaitanasis.OnlineAnalysis.AnalysisData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
         mBluetoothProcess1 = new BluetoothProcess(mSystemConfig.getAddressDevice1());
         mBluetoothProcess2 = new BluetoothProcess(mSystemConfig.getAddressDevice2());
-        mAnalysisData1 = new AnalysisData();
-        mAnalysisData2 = new AnalysisData();
+        mAnalysisData1 = new AnalysisData(params.now_recording_name,'A');
+        mAnalysisData2 = new AnalysisData(params.now_recording_name,'B');
         mTimestampSync = new TimestampSync();
 
         //MacAddress2 = mSystemConfig.getAddressDevice2();

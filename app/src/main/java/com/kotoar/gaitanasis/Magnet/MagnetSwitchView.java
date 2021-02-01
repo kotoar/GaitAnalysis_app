@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.kotoar.gaitanasis.ControlParameters;
 import com.kotoar.gaitanasis.R;
+import com.kotoar.gaitanasis.SystemConfig;
 
 public class MagnetSwitchView extends LinearLayout {
 
@@ -29,6 +28,8 @@ public class MagnetSwitchView extends LinearLayout {
     String label;
     String content;
     Integer icon;
+
+    ControlParameters params;
 
     private boolean is_on;
     private boolean is_clickable;
@@ -59,6 +60,7 @@ public class MagnetSwitchView extends LinearLayout {
     }
 
     protected void initView(Context context){
+        params = ControlParameters.getInstance();
         layoutInflater.from(context).inflate(R.layout.magnet_switch, this, true);
         linearLayout = findViewById(R.id.magnet_switch_layout);
         textViewLabel = findViewById(R.id.magnet_switch_label);
@@ -134,10 +136,14 @@ public class MagnetSwitchView extends LinearLayout {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        content = "Record: " + input_content.getText().toString();
+                        String input = input_content.getText().toString();
+                        content = "Record: " + input;
                         textViewContent.setText(content);
+                        params.now_recording_name = input;
+
                     }
                 }).setNegativeButton("cancel",null).show();
+
     }
 
 }

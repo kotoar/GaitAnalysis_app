@@ -1,4 +1,4 @@
-package com.kotoar.gaitanasis;
+package com.kotoar.gaitanasis.Connection;
 
 public class TimestampSync {
 

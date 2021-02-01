@@ -20,6 +20,8 @@ public class ControlParameters {
     private boolean if_draw_cube1;
     private boolean if_draw_cube2;
 
+    public String now_recording_name;
+
 
     public boolean is_device1_connected;
     public boolean is_device2_connected;

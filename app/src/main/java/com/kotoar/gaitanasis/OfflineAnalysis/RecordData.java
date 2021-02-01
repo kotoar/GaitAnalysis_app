@@ -1,17 +1,20 @@
-package com.kotoar.gaitanasis;
+package com.kotoar.gaitanasis.OfflineAnalysis;
 
-public class RecordsInformation {
+import com.kotoar.gaitanasis.Magnet.MagnetDataType;
+import com.kotoar.gaitanasis.R;
+
+public class RecordData implements MagnetDataType {
     private String mFilename;
     private String mRecordTitle;
     private String mSubtitle;
     private boolean isProcessed;
     private boolean isRead;
 
-    public RecordsInformation(){
+    public RecordData(){
         isRead = false;
     }
 
-    public RecordsInformation(String filename, String record_title, String subtitle, boolean is_processed){
+    public RecordData(String filename, String record_title, String subtitle, boolean is_processed){
         mFilename = filename;
         mRecordTitle = record_title;
         mSubtitle = subtitle;
@@ -19,7 +22,7 @@ public class RecordsInformation {
         isRead = true;
     }
 
-    public RecordsInformation(String filename, String record_title, boolean is_processed){
+    public RecordData(String filename, String record_title, boolean is_processed){
         mFilename = filename;
         mRecordTitle = record_title;
         mSubtitle = "Unprocessed";
@@ -27,7 +30,7 @@ public class RecordsInformation {
         isRead = true;
     }
 
-    public void read_data(String filename, String record_title, String subtitle, boolean is_processed){
+    public void reset_info(String filename, String record_title, String subtitle, boolean is_processed){
         mFilename = filename;
         mRecordTitle = record_title;
         mSubtitle = subtitle;
@@ -35,7 +38,7 @@ public class RecordsInformation {
         isRead = true;
     }
 
-    public void read_data(String filename, String record_title, boolean is_processed){
+    public void reset_info(String filename, String record_title, boolean is_processed){
         mFilename = filename;
         mRecordTitle = record_title;
         mSubtitle = "Unprocessed";
@@ -47,12 +50,16 @@ public class RecordsInformation {
         return mFilename;
     }
 
-    public String getRecordTitle(){
+    public String getLabel(){
         return mRecordTitle;
     }
 
-    public String getSubtitle(){
+    public String getContent(){
         return mSubtitle;
+    }
+
+    public Integer getIcon(){
+        return R.drawable.ic_sports_handball_24px;
     }
 
     public boolean getIsProcessed(){

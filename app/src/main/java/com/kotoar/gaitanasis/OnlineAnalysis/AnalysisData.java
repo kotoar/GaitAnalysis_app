@@ -2,10 +2,13 @@
 * Realtime analysis & data output
 * */
 
-package com.kotoar.gaitanasis;
+package com.kotoar.gaitanasis.OnlineAnalysis;
 
 import android.os.Environment;
 import android.util.Log;
+
+import com.kotoar.gaitanasis.OfflineAnalysis.RecordData;
+import com.kotoar.gaitanasis.SystemConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,14 +35,29 @@ public class AnalysisData {
 
     private final String json_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/gaitanalysis/data";
 
+    private String recordName;
+    private char aIndex;
+
     ArrayList<ArrayList<Double>> dataIMU;
     ArrayList<ArrayList<Double>> dataMag;
     ArrayList<ArrayList<Double>> dataStrain;
+
+    SystemConfig config;
 
     public AnalysisData(){
         dataIMU = new ArrayList<>();
         dataMag = new ArrayList<>();
         dataStrain = new ArrayList<>();
+        config = SystemConfig.getInstance();
+    }
+
+    public AnalysisData(String record_name, char index){
+        dataIMU = new ArrayList<>();
+        dataMag = new ArrayList<>();
+        dataStrain = new ArrayList<>();
+        config = SystemConfig.getInstance();
+        recordName = record_name;
+        aIndex = index;
     }
 
     public void addimu3(double x, double y, double z, double t){
@@ -111,6 +129,9 @@ public class AnalysisData {
         if (json_output.exists()){
             Log.e("MyTAG","successful");
         }
+        config.addRecord(new RecordData(String.valueOf(System.currentTimeMillis())+aIndex, recordName, false));
+        config.resetResords();
+
     }
 
     public void cleardata(){

@@ -26,7 +26,7 @@ import androidx.core.content.ContextCompat;
 public class DevicesActivity extends AppCompatActivity {
 
     BluetoothAdapter mBluetoothAdapter;
-    MagnetViewAdapter mMagnetViewAdapter;
+    DevicesViewAdapter devicesViewAdapter;
     ListView devicesList;
 
     RadioButton radioButton_device1;
@@ -76,14 +76,14 @@ public class DevicesActivity extends AppCompatActivity {
 
         mBluetoothAdapter.startDiscovery();
 
-        mMagnetViewAdapter = new MagnetViewAdapter(this);
+        devicesViewAdapter = new DevicesViewAdapter(this);
         initView();
 
     }
 
     private void initView(){
-        devicesList.setAdapter(mMagnetViewAdapter);
-        mMagnetViewAdapter.notifyDataSetChanged();
+        devicesList.setAdapter(devicesViewAdapter);
+        devicesViewAdapter.notifyDataSetChanged();
     }
 
     public void requestBluetoothPermission() {
@@ -106,7 +106,7 @@ public class DevicesActivity extends AppCompatActivity {
                 String deviceName = device.getName();
                 String deviceMacAddress = device.getAddress();
                 if(deviceName!=null && deviceName.equals("HC-06")){
-                    mMagnetViewAdapter.addDevice(new DevicesInformation(deviceName,deviceMacAddress));
+                    devicesViewAdapter.addMagnet(new DeviceData(deviceName,deviceMacAddress));
                 }
                 initView();
             }

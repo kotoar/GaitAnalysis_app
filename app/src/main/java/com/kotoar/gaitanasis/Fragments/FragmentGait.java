@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kotoar.gaitanasis.ControlParameters;
-import com.kotoar.gaitanasis.DrawView;
+import com.kotoar.gaitanasis.OnlineAnalysis.DrawView;
 import com.kotoar.gaitanasis.Magnet.MagnetSwitchView;
 import com.kotoar.gaitanasis.MainActivity;
 import com.kotoar.gaitanasis.R;

@@ -1,4 +1,4 @@
-package com.kotoar.gaitanasis;
+package com.kotoar.gaitanasis.OnlineAnalysis;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.view.View;
+
+import com.kotoar.gaitanasis.ControlParameters;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
